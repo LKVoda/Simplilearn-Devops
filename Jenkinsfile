@@ -1,17 +1,17 @@
 pipeline {
-environment {
-	registry = "lkvoda/simplilearn-devops"
-    registryCredential = "dockerhub"
+	environment {
+		registry = "lkvoda/simplilearn-devops"
+    		registryCredential = "dockerhub"
 }
 agent any
 stage {
 	stage('Building image') {
-    steps{
-    	script {
-        dockerImage = docker.build registry + ":$Build_number"
-        }
-    }
-    }
+    	steps{
+    		script {
+       		dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        	}
+    	}
+    	}
     
     stage('Deploy Image') {
     steps{
@@ -25,7 +25,7 @@ stage {
     
     stage('Remove Image') {
     steps{
-    	sh "dockerrmi $registry.$build_number"
+    	sh "docker rmi $registry:$BUILD_NUMBER"
     }
     }
 }
@@ -33,7 +33,7 @@ stage {
 
 node {
 	stage('Execute Image') {
-    	def customeImage = docker.build("lkvoda/simplilearn-devops:${env.build_number}")
+    	def customeImage = docker.build("lkvoda/simplilearn-devops:${env.BUILD_NUMBER}")
         customImage.inside {
         	sh 'echo This is the code executing inside the container.'
         }
