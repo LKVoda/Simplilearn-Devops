@@ -1,41 +1,47 @@
 pipeline {
-	environment {
-		registry = "lkvoda/simplilearn-devops"
-    		registryCredential = "dockerhub"
-}
-agent any
-stage {
-	stage('Building image') {
-    	steps{
-    		script {
-       		dockerImage = docker.build registry + ":$BUILD_NUMBER"
-        	}
-    	}
-    	}
-    
-    stage('Deploy Image') {
-    steps{
-    	script {
-        docker.withRegistry( '', 'dockerhub' ) {
-        	dockerImage.push()
+  environment {
+    registry = "LKVoda/docker-jenkins"
+    registryCredential = 'LKVodadockerhub'
+  }
+  agent any
+  stages {
+	stage('Cloning Git') {
+	steps {
+		git 'https://github.com/lkvoda/simplilearn-devops.git'
+	      }
+	}
+
+        stage('Building image') {
+        steps{
+            script {
+            dockerImage = docker.build registry + ":$BUILD_NUMBER"
+            }
         }
         }
-    }
-    }
-    
-    stage('Remove Image') {
-    steps{
-    	sh "docker rmi $registry:$BUILD_NUMBER"
-    }
-    }
-}
+
+        stage('Deploy Image') {
+        steps{
+            script {
+            docker.withRegistry( '', 'dockerhub' ) {
+                dockerImage.push()
+            }
+            }
+        }
+        }
+
+        stage('Remove Image') {
+        steps{
+            sh "docker rmi $registry:$BUILD_NUMBER"
+        }
+        }
+   }   
 }
 
 node {
-	stage('Execute Image') {
-    	def customeImage = docker.build("lkvoda/simplilearn-devops:${env.BUILD_NUMBER}")
+    stage('Execute Image'){
+        def customImage = docker.build("lkvoda/docker-jenkins:${env.BUILD_NUMBER}")
         customImage.inside {
-        	sh 'echo This is the code executing inside the container.'
+            sh 'echo This is the code executing inside the container.'
         }
     }
 }
