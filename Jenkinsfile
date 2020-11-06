@@ -1,6 +1,6 @@
 pipeline {
   environment {
-    registry = "lkvoda/docker-jenkins"
+    registry = "Lee Keene/Docker-Jenkins"
     registryCredential = 'lkvodadockerhub'
   }
   agent any
@@ -39,7 +39,7 @@ pipeline {
 
 node {
     stage('Execute Image'){
-        def customImage = docker.build("lkvoda/docker-jenkins:${env.BUILD_NUMBER}")
+        def customImage = docker.build("Lee Keene/Docker-Jenkins:${env.BUILD_NUMBER}")
         customImage.inside {
             sh 'echo This is the code executing inside the container.'
         }
