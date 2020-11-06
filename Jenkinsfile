@@ -1,7 +1,7 @@
 pipeline {
   environment {
-    registry = "LKVoda/docker-jenkins"
-    registryCredential = 'LKVodadockerhub'
+    registry = "lkvoda/docker-jenkins"
+    registryCredential = 'lkvodadockerhub'
   }
   agent any
   stages {
